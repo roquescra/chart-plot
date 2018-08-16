@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro&text=%E2%86%90|%E2%86%92');
+
+.div { 
+  box-sizing: border-box; 
+  position: relative; 
+  
+}
+.App {
+  background-color: rgb(200, 200, 200);
+  font-family: 'Source Sans Pro', sans-serif; 
+}
+.App-header {
+  background-color: rgb(200, 200, 200);
+  height: 50px;
+  padding: 10px;
+  color: rgb(60, 60, 60);
+
+}
+.App-title {
+  font-size: 1.2em;
+}
+.App-footer {
+  background-color: rgb(200, 200, 200);
+  padding: 1%;
+}
+.App-Chart {
+  background-color: rgb(255, 255, 255);
+  padding: 12px;
+}
+.App-Button {
+  background-color:dodgerblue;
+  border: 2px solid dodgerblue;
+  border-radius: 4px;
+  color: white;
+  padding: 8px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin: 12px;
+}
+.App-CodePane {
+  border:2px solid #000000;
+}
+.CodeMirror {
+  font-family: 'Source Code Pro', monospace !important;
+  
+  resize: both;
+  overflow: visible;
+}
