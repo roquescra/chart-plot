@@ -6,7 +6,7 @@ class Chart extends Component{
     super(props);
     this.state = {
       chartsArray: this.props.chartsArray,
-      chartData: this.props.chartsArray,
+      chartData: this.props.chartData,
     }
   }
   render(){
@@ -18,26 +18,14 @@ class Chart extends Component{
           fontFamily: 'sans',
           usePointStyle: true
         }
-      },
-      scales: {
-        yAxes: [{
-          id: 'A',
-          type: 'linear',
-          position: 'left',
-        }, {
-          id: 'B',
-          type: 'linear',
-          position: 'right',
-          ticks: {
-            max: 1,
-            min: 0
-          }
-        }]
       }
     };
+    const charts = this.state.chartsArray.map(chartData => (
+      <Line data={chartData} key={this.state.chartsArray.indexOf(chartData)} options={options} />
+    ));
     return (
       <div className='App-Chart'>
-        <Line data={this.props.chartData} options={options} />
+        {charts}
       </div>
     )
   }
