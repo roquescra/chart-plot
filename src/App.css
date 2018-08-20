@@ -45,7 +45,4 @@
 }
 .CodeMirror {
   font-family: 'Source Code Pro', monospace !important;
-  
-  resize: both;
-  overflow: visible;
 }

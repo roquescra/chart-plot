@@ -3,6 +3,7 @@ import {UnControlled as CodeMirror} from 'react-codemirror2'
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/javascript/javascript';
+
 import Chart from './Chart';
 
 class ChartPlot extends Component{
@@ -11,23 +12,23 @@ class ChartPlot extends Component{
     this.state = {
       chartsArray: [],
       inputText: "",
-      code: '{"type": "start", "timestamp": 1519862400000, "select": ["min_response_time", "max_response_time"], "group": ["os", "browser"]},\n'+
-            '{"type": "span",  "timestamp": 1519862400000, "begin": 1519862400000, "end": 1519862460000},\n'+
-            '{"type": "data",  "timestamp": 1519862400000, "os": "linux", "browser": "chrome", "min_response_time": 0.1, "max_response_time": 1.3},\n'+
-            '{"type": "data",  "timestamp": 1519862400000, "os": "mac", "browser": "chrome", "min_response_time": 0.2, "max_response_time": 1.2},\n'+
-            '{"type": "data",  "timestamp": 1519862400000, "os": "mac", "browser": "firefox", "min_response_time": 0.3, "max_response_time": 1.2},\n'+
-            '{"type": "data",  "timestamp": 1519862400000, "os": "linux", "browser": "firefox", "min_response_time": 0.1, "max_response_time": 1.0},\n'+
-            '{"type": "data",  "timestamp": 1519862400000, "os": "linux", "browser": "chrome", "min_response_time": 0.2, "max_response_time": 0.9},\n'+
-            '{"type": "data",  "timestamp": 1519862400000, "os": "mac", "browser": "chrome", "min_response_time": 0.1, "max_response_time": 1.0},\n'+
-            '{"type": "data",  "timestamp": 1519862400000, "os": "mac", "browser": "firefox", "min_response_time": 0.2, "max_response_time": 1.1},\n'+
-            '{"type": "data",  "timestamp": 1519862400000, "os": "linux", "browser": "firefox", "min_response_time": 0.3, "max_response_time": 1.4},\n'+
-            '{"type": "stop",  "timestamp": 1519862400000}',
+      code: "{type: 'start', timestamp: 1519862400000, select: ['min_response_time', 'max_response_time'], group: ['os', 'browser']},\n"+
+            "{type: 'span',  timestamp: 1519862400000, begin: 1519862400000, end: 1519862460000},\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'chrome', min_response_time: 0.1, max_response_time: 1.3},\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'chrome', min_response_time: 0.2, max_response_time: 1.2},\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'firefox', min_response_time: 0.3, max_response_time: 1.2},\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'firefox', min_response_time: 0.1, max_response_time: 1.0},\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'chrome', min_response_time: 0.2, max_response_time: 0.9},\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'chrome', min_response_time: 0.1, max_response_time: 1.0},\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'firefox', min_response_time: 0.2, max_response_time: 1.1},\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'firefox', min_response_time: 0.3, max_response_time: 1.4},\n"+
+            "{type: 'stop',  timestamp: 1519862400000}",
 
     }
   }
   componentWillMount(){
   this.setState({inputText: this.state.code})
-  this.eventClick(this.state.code)
+  this.generateChart(this.state.code)
 }
   render(){
     var options = {
@@ -47,26 +48,49 @@ class ChartPlot extends Component{
         </div>
         <Chart chartsArray={this.state.chartsArray} />
         <button className="App-Button" id="generate-chart" 
-                onClick={()=>{this.eventClick(this.state.inputText);}} 
+                onClick={()=>{this.generateChart(this.state.inputText);}} 
         > GENERATE CHART
         </button>
       </div>  
     )
   }
-  eventClick = (inputText) => {
-    console.log("GENERATE CHART");
+  clearChartsArray(){
     while(this.state.chartsArray.length > 0) {
       this.state.chartsArray.pop();
+    }
   }
+  prepareJsonCode(inputText){
+    var inputText = inputText.replace(/\s/g,'')
+                            .replace(/type:/g, '"type":')
+                            .replace(/timestamp:/g, '"timestamp":')
+                            .replace(/select:/g, '"select":')
+                            .replace(/group:/g, '"group":')
+                            .replace(/begin:/g, '"begin":')
+                            .replace(/end:/g, '"end":')
+                            .replace(/os:/g, '"os":')
+                            .replace(/browser:/g, '"browser":')
+                            .replace(/min_response_time:/g, '"min_response_time":')
+                            .replace(/max_response_time:/g, '"max_response_time":')
+                            .replace(/'/g, '"')
+                            .replace(/}{/g, "},{");
+    if(inputText.charAt(0) != '[') inputText = '['+inputText;
+    if(inputText.slice(-1) != ']') inputText = inputText+']';
     try {
-      var jsonCode = JSON.parse("[" + inputText + "]");
-      var dataArray = this.prepareDataArray(jsonCode);
-      this.prepareChartDataArray(dataArray);
+      var jsonCode = JSON.parse(inputText);
     } catch (e) {
       console.log(e)
+      alert("ERRO: Input format");
     }
+    return jsonCode;
+  }
+  generateChart = (inputText) => {
+    console.log("GENERATE CHART");
+    this.clearChartsArray();
+    var jsonCode = this.prepareJsonCode(inputText);
+    var dataArray = this.prepareDataArray(jsonCode);
+    this.prepareChartDataArray(dataArray);
     this.setState({code: inputText});
-    console.log("ChartsArray: ", this.state.chartsArray);
+    //console.log("ChartsArray: ", this.state.chartsArray);
   }
   startOutputData(startCode){
     console.log("startOutputData");
@@ -163,7 +187,7 @@ class ChartPlot extends Component{
     const colors = ['rgba(255,99,132,0.7)','rgb(128,0,0,0.7)','rgba(54, 162, 235,0.7)','rgb(0,0,128,0.7)','rgba(255, 206, 86,0.7)','rgb(128,128,0,0.7)','rgba(0,255,0,0.7)','rgb(0,128,0,0.7)','rgb(255,0,255,0.7)','rgb(128,0,128,0.7)','rgb(0,255,255,0.7)','rgb(0,128,128,0.7)' ];
     var indColor = 0;
     
-    function pushDatasets(element, index, array) {
+    function pushDatasets(element, index) {
       if (indColor >= colors.length) {
         indColor = 0;
       }
