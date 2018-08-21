@@ -3,9 +3,13 @@ import {UnControlled as CodeMirror} from 'react-codemirror2'
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/javascript/javascript';
-
 import Chart from './Chart';
 
+/* 
+  This is the body of code, here are the 
+  functions that read the inputs, prepare 
+  the JSON code and build a data array.
+*/
 class ChartPlot extends Component{
   constructor(props){
     super(props);

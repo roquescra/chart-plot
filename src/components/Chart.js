@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import {Line} from 'react-chartjs-2';
 
+/* 
+  This is the code that plotting 
+  charts from a data array
+*/
 class Chart extends Component{
   constructor(props){
     super(props);
@@ -21,7 +25,10 @@ class Chart extends Component{
       }
     };
     const charts = this.state.chartsArray.map(chartData => (
-      <Line data={chartData} key={this.state.chartsArray.indexOf(chartData)} options={options} />
+      <Line data={chartData} 
+            options={options}
+            key={this.state.chartsArray.indexOf(chartData)} 
+      />
     ));
     return (
       <div className='App-Chart'>
