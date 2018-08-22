@@ -16,16 +16,16 @@ class ChartPlot extends Component{
     this.state = {
       chartsArray: [],
       inputText: "",
-      code: "{type: 'start', timestamp: 1519862400000, select: ['min_response_time', 'max_response_time'], group: ['os', 'browser']},\n"+
-            "{type: 'span',  timestamp: 1519862400000, begin: 1519862400000, end: 1519862460000},\n"+
-            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'chrome', min_response_time: 0.1, max_response_time: 1.3},\n"+
-            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'chrome', min_response_time: 0.2, max_response_time: 1.2},\n"+
-            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'firefox', min_response_time: 0.3, max_response_time: 1.2},\n"+
-            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'firefox', min_response_time: 0.1, max_response_time: 1.0},\n"+
-            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'chrome', min_response_time: 0.2, max_response_time: 0.9},\n"+
-            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'chrome', min_response_time: 0.1, max_response_time: 1.0},\n"+
-            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'firefox', min_response_time: 0.2, max_response_time: 1.1},\n"+
-            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'firefox', min_response_time: 0.3, max_response_time: 1.4},\n"+
+      code: "{type: 'start', timestamp: 1519862400000, select: ['min_response_time', 'max_response_time'], group: ['os', 'browser']}\n"+
+            "{type: 'span',  timestamp: 1519862400000, begin: 1519862400000, end: 1519862460000}\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'chrome', min_response_time: 0.1, max_response_time: 1.3}\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'chrome', min_response_time: 0.2, max_response_time: 1.2}\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'firefox', min_response_time: 0.3, max_response_time: 1.2}\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'firefox', min_response_time: 0.1, max_response_time: 1.0}\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'chrome', min_response_time: 0.2, max_response_time: 0.9}\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'chrome', min_response_time: 0.1, max_response_time: 1.0}\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'mac', browser: 'firefox', min_response_time: 0.2, max_response_time: 1.1}\n"+
+            "{type: 'data',  timestamp: 1519862400000, os: 'linux', browser: 'firefox', min_response_time: 0.3, max_response_time: 1.4}\n"+
             "{type: 'stop',  timestamp: 1519862400000}",
 
     }
@@ -51,41 +51,12 @@ class ChartPlot extends Component{
           />
         </div>
         <Chart chartsArray={this.state.chartsArray} />
-        <button className="App-Button" id="generate-chart" 
+        <button className="App-Button" id="generate-chart"
                 onClick={()=>{this.generateChart(this.state.inputText);}} 
         > GENERATE CHART
         </button>
       </div>  
     )
-  }
-  clearChartsArray(){
-    while(this.state.chartsArray.length > 0) {
-      this.state.chartsArray.pop();
-    }
-  }
-  prepareJsonCode(inputText){
-    var inputText = inputText.replace(/\s/g,'')
-                            .replace(/type:/g, '"type":')
-                            .replace(/timestamp:/g, '"timestamp":')
-                            .replace(/select:/g, '"select":')
-                            .replace(/group:/g, '"group":')
-                            .replace(/begin:/g, '"begin":')
-                            .replace(/end:/g, '"end":')
-                            .replace(/os:/g, '"os":')
-                            .replace(/browser:/g, '"browser":')
-                            .replace(/min_response_time:/g, '"min_response_time":')
-                            .replace(/max_response_time:/g, '"max_response_time":')
-                            .replace(/'/g, '"')
-                            .replace(/}{/g, "},{");
-    if(inputText.charAt(0) != '[') inputText = '['+inputText;
-    if(inputText.slice(-1) != ']') inputText = inputText+']';
-    try {
-      var jsonCode = JSON.parse(inputText);
-    } catch (e) {
-      console.log(e)
-      alert("ERRO: Input format");
-    }
-    return jsonCode;
   }
   generateChart = (inputText) => {
     console.log("GENERATE CHART");
@@ -96,13 +67,34 @@ class ChartPlot extends Component{
     this.setState({code: inputText});
     //console.log("ChartsArray: ", this.state.chartsArray);
   }
-  startOutputData(startCode){
-    console.log("startOutputData");
-    var outputData = new Map();
-    outputData.set('timestamp', startCode.timestamp);
-    outputData.set('group', startCode.group);
-    outputData.set('select', startCode.select);
-    return outputData;
+  clearChartsArray(){
+    while(this.state.chartsArray.length > 0) {
+      this.state.chartsArray.pop();
+    }
+  }
+  prepareJsonCode(inputText){
+    var inputText = inputText.replace(/\s/g,'')
+                             .replace(/type:/g,'"type":')
+                             .replace(/timestamp:/g,'"timestamp":')
+                             .replace(/select:/g,'"select":')
+                             .replace(/group:/g,'"group":')
+                             .replace(/begin:/g,'"begin":')
+                             .replace(/end:/g,'"end":')
+                             .replace(/os:/g,'"os":')
+                             .replace(/browser:/g,'"browser":')
+                             .replace(/min_response_time:/g,'"min_response_time":')
+                             .replace(/max_response_time:/g,'"max_response_time":')
+                             .replace(/'/g,'"')
+                             .replace(/}{/g,'},{');
+    if(inputText.charAt(0) != '[') inputText = '['+inputText;
+    if(inputText.slice(-1) != ']') inputText = inputText+']';
+    try {
+      var jsonCode = JSON.parse(inputText);
+    } catch (e) {
+      console.log(e)
+      alert("ERRO: Input format");
+    }
+    return jsonCode;
   }
   prepareDataArray(jsonCode){
     console.log("prepareChartsArray");
@@ -121,8 +113,17 @@ class ChartPlot extends Component{
         case "span":
             //console.log("span");
             if (started) {
-              var begin = this.msToTime(jsonCode[i].begin - outputData.get('timestamp')),
-                  end   = this.msToTime(jsonCode[i].end   - outputData.get('timestamp'));
+              function msToTime(ms) {
+                var minutes = parseInt((ms / (1000 * 60)) % 60),
+                    hours   = parseInt((ms / (1000 * 60 * 60)) % 24);
+              
+                hours = (hours < 10) ? "0" + hours : hours;
+                minutes = (minutes < 10) ? "0" + minutes : minutes;
+              
+                return hours + ":" + minutes;
+              }
+              var begin = msToTime(jsonCode[i].begin - outputData.get('timestamp')),
+                  end   = msToTime(jsonCode[i].end   - outputData.get('timestamp'));
               outputData.set('labels', [ begin, end]); 
             } else {
               //console.log("ignored");
@@ -174,6 +175,14 @@ class ChartPlot extends Component{
     //console.log(dataArray);
     return dataArray;
   }
+  startOutputData(startCode){
+    console.log("startOutputData");
+    var outputData = new Map();
+    outputData.set('timestamp', startCode.timestamp);
+    outputData.set('group', startCode.group);
+    outputData.set('select', startCode.select);
+    return outputData;
+  }
   prepareChartDataArray(dataArray){
     console.log("prepareChartDataArray");
 
@@ -209,15 +218,6 @@ class ChartPlot extends Component{
       labels: chartData.get("labels"),
       datasets: datasets
     }
-  }
-  msToTime(ms) {
-    var minutes = parseInt((ms / (1000 * 60)) % 60),
-        hours   = parseInt((ms / (1000 * 60 * 60)) % 24);
-  
-    hours = (hours < 10) ? "0" + hours : hours;
-    minutes = (minutes < 10) ? "0" + minutes : minutes;
-  
-    return hours + ":" + minutes;
   }
 }
 export default ChartPlot;
